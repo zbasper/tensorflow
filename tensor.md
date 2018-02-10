@@ -23,3 +23,24 @@ tf.placeholder(dtype, shape=None, name=None)
         rand_array = np.random.rand(1024, 1024)
         sess.run(y, feed_dict={x: rand_array})
 
+### 变量
+
+tf.Variable是类
+
+> \_\_init\_\_(
+>    initial_value=None,
+>    trainable=True,
+>    collections=None,
+>    validate_shape=True,
+>    caching_device=None,
+>    name=None,
+>    variable_def=None,
+>    dtype=None,
+>    expected_shape=None,
+>    import_scope=None,
+>    constraint=None
+>)
+
+    w = tf.Variable([1,2,3,4])
+    
+    
