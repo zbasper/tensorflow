@@ -41,6 +41,12 @@ tf.Variable是类
         constraint=None
     )
 
+    
     w = tf.Variable([1,2,3,4])
+    init_op = tf.global_variables_initializer()
     
+    with tf.Session() as sess:
+        sess.run(init_op)
+        print(sess.run(w))
     
+
