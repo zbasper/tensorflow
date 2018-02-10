@@ -4,7 +4,7 @@
 
 ### 常量
 
-<font color=blue>tf.constant(value, dtype=None, shape=None, name='Const', verify_shape=False)</fond>
+tf.constant(value, dtype=None, shape=None, name='Const', verify_shape=False)
 
     scalar = tf.contant(100)
     vector = tf.constant([1,2,3,4,5])
