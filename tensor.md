@@ -3,6 +3,7 @@
 `import tensorflow as tf`
 
 ### 常量
+
 `
     scalar = tf.contant(100)
     vector = tf.constant([1,2,3,4,5])
@@ -11,6 +12,7 @@
 `
 
 ### 占位符，最后用feed_dict进行赋值
+
 `
     tf.placeholder(dtype, shape=None, name=None)
     
