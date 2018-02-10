@@ -4,6 +4,7 @@
 
 ### 常量
 
+<font color=blue>tf.constant(value, dtype=None, shape=None, name='Const', verify_shape=False)</fond>
 
     scalar = tf.contant(100)
     vector = tf.constant([1,2,3,4,5])
@@ -13,7 +14,7 @@
 
 ### 占位符，最后用feed_dict进行赋值
 
-tf.placeholder(dtype, shape=<font color=blue>None</font>, name=None)
+tf.placeholder(dtype, shape=None, name=None)
     
     x = tf.placeholder(tf.float32, shape=(1024, 1024))
     y = tf.matmul(x, x)
