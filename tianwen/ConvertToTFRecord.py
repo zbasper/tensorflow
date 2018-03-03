@@ -35,7 +35,7 @@ def main(args):
                             "label": tf.train.Feature(int64_list=tf.train.Int64List(value=[df.type[i]])),
                             "feature": tf.train.Feature(bytes_list=tf.train.BytesList(value=[line]))
                     }))
-                        
+                    writer.write(example.SerializeToString())    
                     i += 1
                     
             if j == 1:
