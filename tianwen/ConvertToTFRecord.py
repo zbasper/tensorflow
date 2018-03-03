@@ -26,15 +26,15 @@ def main(args):
             with myzip.open(fn) as myfile:
                 for line in myfile:
                     if totalNUm == None:
-                        continue
+                        pass
                     elif i > totalNum :
                         j = 1
                         break
-                    else:
-                        example = tf.train.Example(features=tf.train.Features(feature={
+                        
+                    example = tf.train.Example(features=tf.train.Features(feature={
                             "label": tf.train.Feature(int64_list=tf.train.Int64List(value=[df.type[i]])),
                             "feature": tf.train.Feature(bytes_list=tf.train.BytesList(value=[line]))
-                        }))
+                    }))
                         
                     i += 1
                     
