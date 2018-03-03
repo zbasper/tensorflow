@@ -4,8 +4,8 @@ import zipfile as zf
 import pandas as pd
 import argparse
 
-data_path = "eeeeee.zip"
-label_path = "sefsef.csv"
+data_path = "tianwen_train_data.zip"
+label_path = "tianwen_train_index.csv"
 labels = {'star': 0, 'galaxy': 1, 'qso': 2, 'unknown': 3}
 
 def main(args):
@@ -18,7 +18,7 @@ def main(args):
     df['type'] = df['type'].replace(['star', 'galaxy', 'qso', 'unknown'], [0,1,2,3])
         
     tfRecordOption = tf.python_io.TFRecordOptions(tf.python_io.TFRecordCompressionType.ZLIB)
-    writer = tf.python_io.TFRecordWriter("xxxxx.tfrecord", tfRecordOption)
+    writer = tf.python_io.TFRecordWriter("tianwen_train_data_zlib.tfrecord", tfRecordOption)
     
     with zf.ZipFile(data_path, "r") as myzip:
         filenames = myzip.namelist()
