@@ -15,8 +15,8 @@ def main(args):
     j = 0
     
     df = pd.read_csv(label_path)
-    
-    
+    df['type'] = df['type'].replace(['star', 'galaxy', 'qso', 'unknown'], [0,1,2,3])
+        
     tfRecordOption = tf.python_io.TFRecordOptions(tf.python_io.TFRecordCompressionType.ZLIB)
     writer = tf.python_io.TFRecordWriter("xxxxx.tfrecord", tfRecordOption)
     
@@ -32,7 +32,7 @@ def main(args):
                         break
                     else:
                         example = tf.train.Example(features=tf.train.Features(feature={
-                            "label": tf.train.Feature(int64_list=tf.train.Int64List(value=[])),
+                            "label": tf.train.Feature(int64_list=tf.train.Int64List(value=[df.type[i]])),
                             "feature": tf.train.Feature(bytes_list=tf.train.BytesList(value=[line]))
                         }))
                         
