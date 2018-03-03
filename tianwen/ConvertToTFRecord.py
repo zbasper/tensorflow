@@ -1,20 +1,21 @@
 
 import tensorflow as tf
 import zipfile as zf
+import pandas as pd
 import argparse
 
 data_path = "eeeeee.zip"
 label_path = "sefsef.csv"
 labels = {'star': 0, 'galaxy': 1, 'qso': 2, 'unknown': 3}
 
-
-
-
 def main(args):
     
     totalNum = args.dataNum
     i = 0
     j = 0
+    
+    df = pd.read_csv(label_path)
+    
     
     tfRecordOption = tf.python_io.TFRecordOptions(tf.python_io.TFRecordCompressionType.ZLIB)
     writer = tf.python_io.TFRecordWriter("xxxxx.tfrecord", tfRecordOption)
