@@ -25,4 +25,7 @@ def load_data():
     next_element = iterator.get_next()
     feature, label = next_element
     
-    return (feature, label)
+    return ({"feature": feature}, [label])
+
+def train_input_fn():
+    dataset = 
