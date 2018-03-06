@@ -17,7 +17,7 @@ def _parse_function(example_proto):
     return feature, parse_features["label"]
 
 
-def load_data():
+def load_data(batch_size):
   
     dataset = tf.data.TFRecordDataset(TRAIN_FILE, "ZLIB")
     dataset = dataset.map(_parse_function)
@@ -27,5 +27,5 @@ def load_data():
     
     return ({"feature": feature}, [label])
 
-def train_input_fn():
+def train_input_fn(features, labels, batch_size):
     dataset = 
