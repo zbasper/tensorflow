@@ -12,7 +12,6 @@ TRAIN_FILE = "tianwen_data_zlib.tfrecord"
 TEST_FILE = "tianwen_data_eval_zlib.tfrecord"
 PREDICT_FILE = "tianwen_data_test_zlib.tfrecord"
 
-def input_evaluation_set():
 
 def main():
     
@@ -20,6 +19,8 @@ def main():
     batch_size = args.batch_size
     train_steps = args.train_steps
     
+    my_feature_columns = []
+    my_feature_columns.append(tf.feature_column.numeric_column(key='feature', shape=2600))
     
     # Build 2 hidden layer DNN with 10, 10 units respectively.
     classifer = tf.estimator.DNNClassifier (
