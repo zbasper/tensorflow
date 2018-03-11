@@ -21,7 +21,6 @@ with tf.Session() as sess:
 输出：[{'a': array([32, 25], dtype=int32), 'b': array([3, 2], dtype=int32)}, array([4, 5], dtype=int32)]
 
 
-
 from_tensor_slices将参数按第一维进行切分，生成包含N行tensor的dataset
 ```
 dataset = tf.data.Dataset.from_tensor_slices(({'a': [32, 23], 'b': [3, 5]}, [4, 7]))
