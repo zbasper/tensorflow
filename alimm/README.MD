@@ -16,7 +16,7 @@
 * item_property_list：广告商品的属性列表，String类型；数据拼接格式为 "property_0;property_1;property_2"，各个属性没有从属关系
 * item_brand_id：广告商品的品牌编号，Long类型
 * item_city_id：广告商品的城市编号，Long类型
-* item_price_level：广告商品的价格等级，Int类型；取值从0开始，数值越大表示价格越高
+* item_price_level：广告商品的价格等级，Int类型；取值从0开始，数值越大表示价格越高，价格分布符合正态分布。
 * item_sales_level：广告商品的销量等级，Int类型；取值从0开始，数值越大表示销量越大
 * item_collected_level：广告商品被收藏次数的等级，Int类型；取值从0开始，数值越大表示被收藏次数越大
 * item_pv_level：广告商品被展示次数的等级，Int类型；取值从0开始，数值越大表示被展示次数越大
