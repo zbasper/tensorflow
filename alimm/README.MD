@@ -17,9 +17,14 @@
 * item_brand_id：广告商品的品牌编号，Long类型
 * item_city_id：广告商品的城市编号，Long类型
 * item_price_level：广告商品的价格等级，Int类型；取值从0开始，数值越大表示价格越高。
-> 价格分布符合正态分布
+> 价格分布符合正态分布，使用Bucketized columns，分成三个区间<3, >=3 but <10, >=10
+
 * item_sales_level：广告商品的销量等级，Int类型；取值从0开始，数值越大表示销量越大
-> 销量符合正态分布
+> 销量符合正态分布，使用Bucketized columns，分成三个区间<8, >=8 but <16, >=16
+
 * item_collected_level：广告商品被收藏次数的等级，Int类型；取值从0开始，数值越大表示被收藏次数越大
+> 符合正态分布，使用Bucketized columns，分成三个区间<7, >=7 but <17, >=17
+
 * item_pv_level：广告商品被展示次数的等级，Int类型；取值从0开始，数值越大表示被展示次数越大
+> 符合正态分布，使用Bucketized columns, 分成三个区间<13, >=13 but <20, >=20
 
