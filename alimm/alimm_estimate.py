@@ -21,14 +21,16 @@ def features():
     #广告商品品牌编号
     item_brand_id = tf.feature_column.categorical_column_with_vocabulary_file(
         key = "item_brand_id",
-        vocabulary_file = "/features/item_brand_id.csv")
+        vocabulary_file = "/features/item_brand_id.csv",
+        dtype = tf.int64)
     item_brand_id = tf.feature_column.embedding_column(
         categorical_column=item_brand_id,
         dimension=7)
     #广告商品城市编号
     item_city_id = tf.feature_column.categorical_column_with_vocabulary_file(
         key = "item_city_id",
-        vocabulary_file = "/features/item_city_id.csv")
+        vocabulary_file = "/features/item_city_id.csv",
+        dtype = tf.int64)
     item_city_id = tf.feature_column.embedding_column(
         categorical_column=item_city_id,
         dimension=4)
@@ -43,7 +45,7 @@ def features():
     item_pv_level = tf.feature_column.numeric_column("item_pv_level", dtype=tf.int8)
     
     #用户性别编号
-    user_gender_id = tf.feature_column.numeric_column("user_gender_Id", dtype=tf.int8)
+    user_gender_id = tf.feature_column.numeric_column("user_gender_id", dtype=tf.int8)
     #用户年龄等级
     user_age_level = tf.feature_column.numeric_column("user_age_level", dtype=tf.int16)
     #用户职业编号
@@ -105,13 +107,13 @@ def train_input_fn(_features, _labels, _batch_size):
 
 #执行函数
 def eval_input_fn(_features, _labels, _batch_size):
-    _feature = dict(_features)
-    if _labels == None:
+    _features = dict(_features)
+    if _labels is None:
         inputs = _features
     else:
         inputs = (_features, _labels)
     
-    dateset = tf.data.Dataset.from_tensor_slices(inputs)
+    dataset = tf.data.Dataset.from_tensor_slices(inputs)
     dataset = dataset.batch(_batch_size)
     
     return dataset
@@ -127,9 +129,15 @@ def main(argv):
     train = train.drop(['instance_id', 'item_id', 'user_id', 'shop_id', 'context_id', 
                        'predict_category_property', 'item_category_list', 'item_property_list'], axis=1)
     total = train['is_trade'].count()
-    train_num, eval_num = int(total * 0.8), total - int(total * 0.8)
+    train_num = int(total * 0.8)
     train_x, train_y = train.iloc[0:train_num, :-1], train["is_trade"][0:train_num]
-    test_x, test_y = train.iloc[train_num:eval_num, :-1], train["is_trade"][train_num:eval_num]
+    test_x, test_y = train.iloc[train_num:total, :-1], train["is_trade"][train_num:total]
+    print(test_x.tail(3))
+    
+    predict = pd.read_csv(TEST_FILE, sep=' ')
+    predict_x = predict.drop(['instance_id', 'item_id', 'user_id', 'shop_id', 'context_id', 
+                       'predict_category_property', 'item_category_list', 'item_property_list'], axis=1)
+    
     
     classifier = tf.estimator.DNNClassifier (
         feature_columns = features(),
@@ -145,15 +153,13 @@ def main(argv):
     
     #Evaluate the model.
     eval_result = classifier.evaluate (
-        input_fn = lambda: eval_input_fn(dataset_test, batch_size)
+        input_fn = lambda: eval_input_fn(test_x, test_y, batch_size)
     )
     print("Test set accuracy: (accuracy:0.3)\n".format(**eval_result))
     
-    sys.exit(0)
-    
     #Generate predictions from the model
     predictions = classifier.predict (
-        input_fn = lambda: eval_input_fn(dataset_predict)
+        input_fn = lambda: eval_input_fn(predict_x, _labels=None, _batch_size=batch_size)
     )
 
     for pred_dict, expec in zip(predictions, expected):
