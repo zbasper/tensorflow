@@ -1,11 +1,11 @@
 import tensorflow as tf
+import pandas as pd
 
-
+TRAIN_FILE = "round1_ijcai_18_train_20180301.txt"
+TEST_FILE = "round1_ijcai_18_test_a_20180301.txt"
 
 
 def features():
-    
-    my_features = []
     
     #广告商品品牌编号
     item_brand_id = tf.feature_column.categorical_column_with_vocabulary_file(
@@ -75,5 +75,66 @@ def features():
     
     return my_features
 
+def train_input_fn(_features, _labels, _batch_size):
+    
+    dataset = tf.data.Dataset.from_tensor_slices((dict(_features), _labels))
 
+    # Shuffle, repeat, and batch the examples.
+    dataset = dataset.batch(_batch_size)
+    
+    return dataset
+
+def eval_input_fn(_features, _labels, _batch_size):
+    _feature = dict(_features)
+    if _labels == None:
+        inputs = _features
+    else:
+        inputs = (_features, _labels)
+    
+    dateset = tf.data.Dataset.from_tensor_slices(inputs)
+    dataset = dataset.batch(_batch_size)
+    
+    return dataset
+
+
+
+def main(argv):
+    
+    
+    train = pd.read_csv(TRAIN_FILE, sep=' ')
+    train = train.pop(['instance_id', 'item_id', 'user_id', 'shop_id', 'context_id', 
+                       'predict_category_property', 'item_category_list', 'item_property_list'], axis=1)
+    train_x, train_y = train, train.pop("is_trade")
+    
+    classifier = tf.estimator.DNNClassifier (
+        feature_columns = features(),
+        hidden_units = [10, 10],
+        n_classes = 2
+    )
+    
+    # Train the model
+    classifier.train (
+        input_fn = lambda: train_input_fn(feature, label, batch_size),
+        steps = train_steps
+    )
+    
+    #Evaluate the model.
+    eval_result = classifier.evaluate (
+        input_fn = lambda: eval_input_fn(dataset_test, batch_size)
+    )
+    print("Test set accuracy: (accuracy:0.3)\n".format(**eval_result))
+    
+    #Generate predictions from the model
+    predictions = classifier.predict (
+        input_fn = lambda: eval_input_fn(dataset_predict)
+    )
+
+    for pred_dict, expec in zip(predictions, expected):
+        template = ('\nPrediction is "{}" ({:.1f}%), expected "{}"')
+
+        class_id = pred_dict['class_ids'][0]
+        probability = pred_dict['probabilities'][class_id]
+    
+    
+    
     
