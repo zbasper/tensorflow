@@ -1,57 +1,75 @@
+#!/usr/bin/env python
+
 import tensorflow as tf
 import pandas as pd
+import argparse
+import sys
 
 TRAIN_FILE = "round1_ijcai_18_train_20180301.txt"
 TEST_FILE = "round1_ijcai_18_test_a_20180301.txt"
 
+parser = argparse.ArgumentParser()
+parser.add_argument('--batch_size', default=100, type=int, help='batch size')
+parser.add_argument('--train_steps', default=1000, type=int,
+                    help='number of training steps')
 
+
+
+#特征函数
 def features():
     
     #广告商品品牌编号
     item_brand_id = tf.feature_column.categorical_column_with_vocabulary_file(
         key = "item_brand_id",
-        vacabulary_file = "../features/item_brand_id.csv")
+        vocabulary_file = "/features/item_brand_id.csv")
+    item_brand_id = tf.feature_column.embedding_column(
+        categorical_column=item_brand_id,
+        dimension=7)
     #广告商品城市编号
     item_city_id = tf.feature_column.categorical_column_with_vocabulary_file(
         key = "item_city_id",
-        vacabulary_file = "../features/item_city_id.csv")
+        vocabulary_file = "/features/item_city_id.csv")
+    item_city_id = tf.feature_column.embedding_column(
+        categorical_column=item_city_id,
+        dimension=4)
+    
     #广告商品价格等级
-    item_price = tf.feature_column.numerical_column("item_price_level", dtype=tf.int8)
+    item_price = tf.feature_column.numeric_column("item_price_level", dtype=tf.int8)
     #广告商品销量等级
-    item_sales = tf.feature_column.numerical_column("item_sales_level", dtype=tf.int8)
+    item_sales = tf.feature_column.numeric_column("item_sales_level", dtype=tf.int8)
     #广告商品收藏次数等级
-    item_collected_level = tf.feature_column.numerical_column("item_collected_level", dtype=tf.int8)
+    item_collected_level = tf.feature_column.numeric_column("item_collected_level", dtype=tf.int8)
     #广告商品展示次数等级
-    item_pv_level = tf.feature_column.numerical_column("item_pv_level", dtype=tf.int8)
+    item_pv_level = tf.feature_column.numeric_column("item_pv_level", dtype=tf.int8)
     
     #用户性别编号
-    user_gender_id = tf.feature_column.numerical_column("user_gender_Id", dtype=tf.int8)
+    user_gender_id = tf.feature_column.numeric_column("user_gender_Id", dtype=tf.int8)
     #用户年龄等级
-    user_age_level = tf.feature_column.numerical_column("user_age_level", dtype=tf.int16)
+    user_age_level = tf.feature_column.numeric_column("user_age_level", dtype=tf.int16)
     #用户职业编号
-    user_occupation_id = tf.feature_column.numerical_column("user_occupation_id", dtype=tf.int16)
+    user_occupation_id = tf.feature_column.numeric_column("user_occupation_id", dtype=tf.int16)
     #用户星级编号
-    user_star_level = tf.feature_column.numerical_column("user_star_level", dtype=tf.int16)
+    user_star_level = tf.feature_column.numeric_column("user_star_level", dtype=tf.int16)
     
     #广告商品展示时间
     #context_timestamp 
     #广告商品展示页面编号
-    context_page_id = tf.feature.column.numerical_column("context_page_id", dtype=tf.int16)
+    context_page_id = tf.feature.column.numeric_column("context_page_id", dtype=tf.int16)
     #查询词类目属性
     #predict_category_property
     
     #店铺评价数量等级
-    shop_review_num_level = tf.feature_column.numerical_column("shop_review_num_level", dtype=tf.int8)
+    shop_review_num_level = tf.feature_column.numeric_column("shop_review_num_level", dtype=tf.int8)
     #店铺好评率
-    shop_review_positive_rate = tf.feature.column.numerical_column("shop_review_positive_rate")
+    shop_review_positive_rate = tf.feature.column.numeric_column("shop_review_positive_rate")
     #店铺星级编号
-    shop_star_level = tf.fetaure_column.numerical_column("shop_star_level", dtype=tf.int16)
+    shop_star_level = tf.fetaure_column.numeric_column("shop_star_level", dtype=tf.int16)
     #店铺服务态度评分
-    shop_score_service = tf.feature_column.numerical_column("shop_score_service")
+    shop_score_service = tf.feature_column.numeric_column("shop_score_service")
     #店铺物流服务评分
-    shop_score_delivery = tf.feature_column.numerical_column("shop_score_delivery")
+    shop_score_delivery = tf.feature_column.numeric_column("shop_score_delivery")
     #店铺描述相符评分
-    shop_score_description = tf.feature_column.numerical_column("shop_score_description")
+    shop_score_description = tf.feature_column.numeric_column("shop_score_description")
     
     my_features = [
         item_brand_id,
@@ -75,6 +93,7 @@ def features():
     
     return my_features
 
+#训练函数
 def train_input_fn(_features, _labels, _batch_size):
     
     dataset = tf.data.Dataset.from_tensor_slices((dict(_features), _labels))
@@ -84,6 +103,7 @@ def train_input_fn(_features, _labels, _batch_size):
     
     return dataset
 
+#执行函数
 def eval_input_fn(_features, _labels, _batch_size):
     _feature = dict(_features)
     if _labels == None:
@@ -96,15 +116,20 @@ def eval_input_fn(_features, _labels, _batch_size):
     
     return dataset
 
-
-
+#主函数
 def main(argv):
     
+    args = parser.parse_args()
+    batch_size = args.batch_size
+    train_steps = args.train_steps
     
     train = pd.read_csv(TRAIN_FILE, sep=' ')
-    train = train.pop(['instance_id', 'item_id', 'user_id', 'shop_id', 'context_id', 
+    train = train.drop(['instance_id', 'item_id', 'user_id', 'shop_id', 'context_id', 
                        'predict_category_property', 'item_category_list', 'item_property_list'], axis=1)
-    train_x, train_y = train, train.pop("is_trade")
+    total = train['is_trade'].count()
+    train_num, eval_num = int(total * 0.8), total - int(total * 0.8)
+    train_x, train_y = train.iloc[0:train_num, :-1], train["is_trade"][0:train_num]
+    test_x, test_y = train.iloc[train_num:eval_num, :-1], train["is_trade"][train_num:eval_num]
     
     classifier = tf.estimator.DNNClassifier (
         feature_columns = features(),
@@ -114,7 +139,7 @@ def main(argv):
     
     # Train the model
     classifier.train (
-        input_fn = lambda: train_input_fn(feature, label, batch_size),
+        input_fn = lambda: train_input_fn(train_x, train_y, batch_size),
         steps = train_steps
     )
     
@@ -123,6 +148,8 @@ def main(argv):
         input_fn = lambda: eval_input_fn(dataset_test, batch_size)
     )
     print("Test set accuracy: (accuracy:0.3)\n".format(**eval_result))
+    
+    sys.exit(0)
     
     #Generate predictions from the model
     predictions = classifier.predict (
@@ -137,4 +164,6 @@ def main(argv):
     
     
     
-    
+if __name__ == '__main__':
+    tf.logging.set_verbosity(tf.logging.INFO)
+    tf.app.run(main) 
