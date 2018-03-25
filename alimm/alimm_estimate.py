@@ -54,14 +54,14 @@ def features():
     #广告商品展示时间
     #context_timestamp 
     #广告商品展示页面编号
-    context_page_id = tf.feature.column.numeric_column("context_page_id", dtype=tf.int16)
+    context_page_id = tf.feature_column.numeric_column("context_page_id", dtype=tf.int16)
     #查询词类目属性
     #predict_category_property
     
     #店铺评价数量等级
     shop_review_num_level = tf.feature_column.numeric_column("shop_review_num_level", dtype=tf.int8)
     #店铺好评率
-    shop_review_positive_rate = tf.feature.column.numeric_column("shop_review_positive_rate")
+    shop_review_positive_rate = tf.feature_column.numeric_column("shop_review_positive_rate")
     #店铺星级编号
     shop_star_level = tf.fetaure_column.numeric_column("shop_star_level", dtype=tf.int16)
     #店铺服务态度评分
