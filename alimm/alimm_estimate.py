@@ -63,7 +63,7 @@ def features():
     #店铺好评率
     shop_review_positive_rate = tf.feature_column.numeric_column("shop_review_positive_rate")
     #店铺星级编号
-    shop_star_level = tf.fetaure_column.numeric_column("shop_star_level", dtype=tf.int16)
+    shop_star_level = tf.feature_column.numeric_column("shop_star_level", dtype=tf.int16)
     #店铺服务态度评分
     shop_score_service = tf.feature_column.numeric_column("shop_score_service")
     #店铺物流服务评分
