@@ -29,3 +29,17 @@
 * user_age_level：用户的预测年龄等级，Int类型；数值越大表示年龄越大
 * user_occupation_id：用户的预测职业编号，Int类型
 * user_star_level：用户的星级编号，Int类型；数值越大表示用户的星级越高
+
+上下文信息
+* context_timestamp：广告商品的展示时间，Long类型；取值是以秒为单位的Unix时间戳，以1天为单位对时间戳进行了偏移
+* context_page_id：广告商品的展示页面编号，Int类型；取值从1开始，依次增加；在一次搜索的展示结果中第一屏的编号为1，第二屏的编号为2
+* predict_category_property：根据查询词预测的类目属性列表，String类型；数据拼接格式为 “category_A:property_A_1,property_A_2,property_A_3;category_B:-1;category_C:property_C_1,property_C_2” ，其中 category_A、category_B、category_C 是预测的三个类目；property_B 取值为-1，表示预测的第二个类目 category_B 没有对应的预测属性
+
+店铺信息
+* shop_review_num_level：店铺的评价数量等级，Int类型；取值从0开始，数值越大表示评价数量越多
+* shop_review_positive_rate：店铺的好评率，Double类型；取值在0到1之间，数值越大表示好评率越高
+* shop_star_level：店铺的星级编号，Int类型；取值从0开始，数值越大表示店铺的星级越高
+* shop_score_service：店铺的服务态度评分，Double类型；取值在0到1之间，数值越大表示评分越高
+* shop_score_delivery：店铺的物流服务评分，Double类型；取值在0到1之间，数值越大表示评分越高
+* shop_score_description：店铺的描述相符评分，Double类型；取值在0到1之间，数值越大表示评分越高
+
